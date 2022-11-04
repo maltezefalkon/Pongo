@@ -18,8 +18,8 @@ namespace Assets
         public BallController Ball = GameObject.Find("Ball").GetComponent<BallController>();
         public GameObject LeftPlayerPaddle = GameObject.Find("LeftPaddle");
         public GameObject RightPlayerPaddle = GameObject.Find("RightPaddle");
-        public GameObject LeftPlayerDefendingGoal = GameObject.Find("ArenaLeftWall");
-        public GameObject RightPlayerDefendingGoal = GameObject.Find("ArenaRightWall");
+        public GameObject LeftPlayerDefendingGoal = GameObject.Find("LeftGoal");
+        public GameObject RightPlayerDefendingGoal = GameObject.Find("RightGoal");
         public TextMeshProUGUI LeftPlayerScoreDisplay = GameObject.Find("LeftPlayerScore").GetComponent<TextMeshProUGUI>();
         public TextMeshProUGUI RightPlayerScoreDisplay = GameObject.Find("RightPlayerScore").GetComponent<TextMeshProUGUI>();
 
