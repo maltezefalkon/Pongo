@@ -32,32 +32,28 @@ public class BallController : BaseController
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        CallComponent<WallController>(CollideWithWall, collision.gameObject);
-        CallComponent<PaddleController>(CollideWithPaddle, collision.gameObject);
+        CallComponent<GoalController>(CollideWithGoal, collision.gameObject);
+        //CallComponent<PaddleController>(CollideWithPaddle, collision.gameObject);
     }
 
-    private void CollideWithPaddle(PaddleController paddleController)
-    {
-        rb.velocity = new Vector2(-(rb.velocity.x + (rb.velocity.x * paddleController.GetPerturbance())), rb.velocity.y + (rb.velocity.y * paddleController.GetPerturbance()));
-        Debug.Log($"Hit {paddleController.side} paddle");
-    }
+    //private void CollideWithPaddle(PaddleController paddleController)
+    //{
+    //    rb.velocity = new Vector2(-(rb.velocity.x + (rb.velocity.x * paddleController.GetPerturbance())), rb.velocity.y + (rb.velocity.y * paddleController.GetPerturbance()));
+    //    Debug.Log($"Hit {paddleController.side} paddle");
+    //}
 
-    private void CollideWithWall(WallController wallController)
+    private void CollideWithGoal(GoalController goalController)
     {
-        Debug.Log($"Hit {wallController.Position} wall");
-        switch (wallController.Position)
+        Debug.Log($"Hit {goalController.Position} goal");
+        switch (goalController.Position)
         {
-            case Assets.Enums.WallPosition.Bottom:
-            case Assets.Enums.WallPosition.Top:
-                rb.velocity = new Vector2(rb.velocity.x + (rb.velocity.x * wallController.GetPerturbance()), -(rb.velocity.y + (rb.velocity.y * wallController.GetPerturbance())));
-                break;
-            case Assets.Enums.WallPosition.Left:
+            case Assets.Enums.GoalPosition.Left:
                 GameManager.Instance.RightPlayerScore += 1;
                 GameManager.Instance.BeginRound();
                 break;
-            case Assets.Enums.WallPosition.Right:
+            case Assets.Enums.GoalPosition.Right:
                 GameManager.Instance.LeftPlayerScore += 1;
                 GameManager.Instance.BeginRound();
                 break;

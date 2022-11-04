@@ -22,6 +22,7 @@ public class PaddleController : BaseController
     private Rigidbody2D rb;
     private Vector2 heading = Vector2.zero;
     private InputAction move;
+    private bool stopped;
 
     void Awake()
     {
@@ -48,21 +49,16 @@ public class PaddleController : BaseController
 
     private void FixedUpdate()
     {
-        heading = GetHeading();
+        heading = stopped ? Vector2.zero : GetHeading(); // returns a vector of magnitude 1
         rb.velocity = new Vector2(0, heading.y * movementSpeed);
+        stopped = false;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        CallComponent<WallController>(CollideWithWall, collision.gameObject);
-    }
-
-    private void CollideWithWall(WallController wallController)
-    {
-        Debug.Log($"Collided with {wallController.Position}");
-        if (wallController.Position == WallPosition.Bottom || wallController.Position == WallPosition.Top)
+        if (collision.gameObject.tag == "Wall")
         {
-            rb.velocity = Vector2.zero;
+            stopped = true;
         }
     }
 

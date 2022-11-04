@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace Assets.Enums
 {
-    public enum WallPosition
+    public enum GoalPosition
     {
         None,
-        Top,
-        Bottom,
         Left,
         Right
     }
