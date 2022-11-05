@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,7 @@ namespace Assets
         public GameObject RightPlayerPaddle = GameObject.Find("RightPaddle");
         public GameObject LeftPlayerDefendingGoal = GameObject.Find("LeftGoal");
         public GameObject RightPlayerDefendingGoal = GameObject.Find("RightGoal");
+        public GameObject Particles = GameObject.Find("Particles");
         public TextMeshProUGUI LeftPlayerScoreDisplay = GameObject.Find("LeftPlayerScore").GetComponent<TextMeshProUGUI>();
         public TextMeshProUGUI RightPlayerScoreDisplay = GameObject.Find("RightPlayerScore").GetComponent<TextMeshProUGUI>();
 
@@ -55,6 +57,23 @@ namespace Assets
         {
             Ball.ResetPosition();
             Ball.SetRandomVelocity();
+        }
+
+        internal void Score(GoalPosition position)
+        {
+            if (position == GoalPosition.Left)
+            {
+                RightPlayerScore += 1;
+                Particles.transform.position = RightPlayerPaddle.transform.position;
+                Particles.GetComponent<ParticleSystem>().Play();
+            }
+            else if (position == GoalPosition.Right)
+            {
+                LeftPlayerScore += 1;
+                Particles.transform.position = LeftPlayerPaddle.transform.position;
+                Particles.GetComponent<ParticleSystem>().Play();
+            };
+            BeginRound();
         }
     }
 }

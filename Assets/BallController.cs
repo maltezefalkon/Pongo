@@ -1,12 +1,17 @@
 using Assets;
+using Assets.Enums;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class BallController : BaseController
 {
     public float Speed = 2f;
+    [Range(1, 5)] public int LaunchFlatteningFactor = 3;
 
     private Rigidbody2D rb;
     private PaddleMovement paddleMovement;
@@ -47,23 +52,16 @@ public class BallController : BaseController
     private void CollideWithGoal(GoalController goalController)
     {
         Debug.Log($"Hit {goalController.Position} goal");
-        switch (goalController.Position)
-        {
-            case Assets.Enums.GoalPosition.Left:
-                GameManager.Instance.RightPlayerScore += 1;
-                GameManager.Instance.BeginRound();
-                break;
-            case Assets.Enums.GoalPosition.Right:
-                GameManager.Instance.LeftPlayerScore += 1;
-                GameManager.Instance.BeginRound();
-                break;
-        }
+        GameManager.Instance.Score(goalController.Position);
     }
 
     public void SetRandomVelocity()
     {
-        Vector2 random = Random.insideUnitCircle.normalized * Speed;
-        rb.velocity = new Vector2(random.x, random.y / 1.5f);
+        IEnumerable<Vector2> candidates = Enumerable.Repeat<object>(null, LaunchFlatteningFactor).Select(x => Random.insideUnitCircle.normalized).ToList();
+        float smallestY = candidates.Min(v => Math.Abs(v.y));
+        Vector2 random = candidates.First(v => Math.Abs(v.y) == smallestY);
+        Vector2 vel = random * Speed;
+        rb.velocity = vel;
     }
 
     public void ResetPosition()
