@@ -53,6 +53,15 @@ public partial class @PaddleMovement : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Reset"",
+                    ""type"": ""Button"",
+                    ""id"": ""35ab13c1-7332-4c3f-a85e-44f5b82abe10"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -187,6 +196,28 @@ public partial class @PaddleMovement : IInputActionCollection2, IDisposable
                     ""action"": ""RightPlayerMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6d50eda1-76b2-4e1f-ad93-9e394be4df19"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reset"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c1ec40f6-e273-4ede-8d17-73f37f4c0832"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reset"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -775,6 +806,7 @@ public partial class @PaddleMovement : IInputActionCollection2, IDisposable
         m_Player_LeftPlayerMove = m_Player.FindAction("LeftPlayerMove", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         m_Player_RightPlayerMove = m_Player.FindAction("RightPlayerMove", throwIfNotFound: true);
+        m_Player_Reset = m_Player.FindAction("Reset", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -849,6 +881,7 @@ public partial class @PaddleMovement : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_LeftPlayerMove;
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_RightPlayerMove;
+    private readonly InputAction m_Player_Reset;
     public struct PlayerActions
     {
         private @PaddleMovement m_Wrapper;
@@ -856,6 +889,7 @@ public partial class @PaddleMovement : IInputActionCollection2, IDisposable
         public InputAction @LeftPlayerMove => m_Wrapper.m_Player_LeftPlayerMove;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @RightPlayerMove => m_Wrapper.m_Player_RightPlayerMove;
+        public InputAction @Reset => m_Wrapper.m_Player_Reset;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -874,6 +908,9 @@ public partial class @PaddleMovement : IInputActionCollection2, IDisposable
                 @RightPlayerMove.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightPlayerMove;
                 @RightPlayerMove.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightPlayerMove;
                 @RightPlayerMove.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightPlayerMove;
+                @Reset.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReset;
+                @Reset.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReset;
+                @Reset.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReset;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -887,6 +924,9 @@ public partial class @PaddleMovement : IInputActionCollection2, IDisposable
                 @RightPlayerMove.started += instance.OnRightPlayerMove;
                 @RightPlayerMove.performed += instance.OnRightPlayerMove;
                 @RightPlayerMove.canceled += instance.OnRightPlayerMove;
+                @Reset.started += instance.OnReset;
+                @Reset.performed += instance.OnReset;
+                @Reset.canceled += instance.OnReset;
             }
         }
     }
@@ -1046,6 +1086,7 @@ public partial class @PaddleMovement : IInputActionCollection2, IDisposable
         void OnLeftPlayerMove(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnRightPlayerMove(InputAction.CallbackContext context);
+        void OnReset(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

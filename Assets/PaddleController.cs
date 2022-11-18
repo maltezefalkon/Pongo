@@ -14,42 +14,25 @@ public class PaddleController : BaseController
     // settable in editor
     public float movementSpeed = 5f;
     public PlayerSide side = PlayerSide.None;
-    public float Perturbance = 0.2f;
-    public bool IsAI = false;
+
+    [SerializeField, SerializeReference]
+    public BasePlayerAgent PlayerInput;
 
     // private fields
-    private PaddleMovement paddleMovement;
     private Rigidbody2D rb;
     private Vector2 heading = Vector2.zero;
-    private InputAction move;
     private bool stopped;
 
     void Awake()
     {
-        paddleMovement = new PaddleMovement();
-        move = side == PlayerSide.Left ? paddleMovement.Player.LeftPlayerMove : paddleMovement.Player.RightPlayerMove;
+        if (side == PlayerSide.None) throw new Exception("No player side defined for PaddleController");
+        PlayerInput = PlayerInput ?? GetComponent<BasePlayerAgent>() ?? GameManager.Instance.GetPlayer(side).Agent ?? throw new Exception($"Failed to determine agent for {side} {nameof(PaddleController)}");
         rb = GetComponent<Rigidbody2D>();
-    }
-
-    private void OnEnable()
-    {
-        if (!IsAI)
-        {
-            move.Enable();
-        }
-    }
-
-    private void OnDisable()
-    {
-        if (!IsAI)
-        {
-            move.Disable();
-        }
     }
 
     private void FixedUpdate()
     {
-        heading = stopped ? Vector2.zero : GetHeading(); // returns a vector of magnitude 1
+        heading = stopped ? Vector2.zero : PlayerInput.GetHeading(gameObject); // returns a vector of magnitude 1
         rb.velocity = new Vector2(0, heading.y * movementSpeed);
         stopped = false;
     }
@@ -61,33 +44,4 @@ public class PaddleController : BaseController
             stopped = true;
         }
     }
-
-    protected virtual Vector2 GetHeading()
-    {
-        if (!IsAI)
-        {
-            return move.ReadValue<Vector2>();
-        }
-        else
-        {
-            if (GameManager.Instance.Ball.gameObject.transform.position.y > gameObject.transform.position.y)
-            {
-                return new Vector2(0, 1);
-            }
-            else if (GameManager.Instance.Ball.gameObject.transform.position.y < gameObject.transform.position.y)
-            {
-                return new Vector2(0, -1);
-            }
-            else
-            {
-                return Vector2.zero;
-            }
-        }
-    }
-
-    public float GetPerturbance()
-    {
-        return UnityEngine.Random.Range(-Perturbance, Perturbance);
-    }
-
 }
