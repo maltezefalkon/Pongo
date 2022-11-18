@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 namespace Assets
 {
     [Serializable]
-    public class HumanPlayerInput : BasePlayerAgent
+    public class HumanPlayerAgent : BasePlayerAgent
     {
         [SerializeField]
         public PlayerSide Side;

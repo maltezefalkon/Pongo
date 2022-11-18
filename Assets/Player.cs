@@ -51,7 +51,7 @@ namespace Assets
             set
             {
                 _agent = value;
-                Paddle.PlayerInput = _agent;
+                Paddle.PlayerAgent = _agent;
             }
         }
     }

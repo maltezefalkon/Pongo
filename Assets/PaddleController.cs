@@ -16,7 +16,7 @@ public class PaddleController : BaseController
     public PlayerSide side = PlayerSide.None;
 
     [SerializeField, SerializeReference]
-    public BasePlayerAgent PlayerInput;
+    public BasePlayerAgent PlayerAgent;
 
     // private fields
     private Rigidbody2D rb;
@@ -26,13 +26,25 @@ public class PaddleController : BaseController
     void Awake()
     {
         if (side == PlayerSide.None) throw new Exception("No player side defined for PaddleController");
-        PlayerInput = PlayerInput ?? GetComponent<BasePlayerAgent>() ?? GameManager.Instance.GetPlayer(side).Agent ?? throw new Exception($"Failed to determine agent for {side} {nameof(PaddleController)}");
+        PlayerAgent = PlayerAgent ?? GetComponent<BasePlayerAgent>() ?? GameManager.Instance.GetPlayer(side).Agent ?? throw new Exception($"Failed to determine agent for {side} {nameof(PaddleController)}");
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void FixedUpdate()
+    private void OnEnable()
     {
-        heading = stopped ? Vector2.zero : PlayerInput.GetHeading(gameObject); // returns a vector of magnitude 1
+        stopped = false;
+        rb.velocity = Vector2.zero;
+    }
+
+    private void OnDisable()
+    {
+        stopped = true;
+        rb.velocity = Vector2.zero;
+    }
+
+    private void Update()
+    {
+        heading = stopped ? Vector2.zero : PlayerAgent.GetHeading(gameObject); // returns a vector of magnitude 1
         rb.velocity = new Vector2(0, heading.y * movementSpeed);
         stopped = false;
     }

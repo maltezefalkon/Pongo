@@ -7460,9 +7460,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d2122415cf4fd7419c15bf59b291ab1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 3
+  movementSpeed: 2.5
   side: 2
-  PlayerInput: {fileID: 0}
+  PlayerAgent: {fileID: 0}
 --- !u!212 &998716525
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7666,9 +7666,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d2122415cf4fd7419c15bf59b291ab1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 3
+  movementSpeed: 2.5
   side: 1
-  PlayerInput: {fileID: 0}
+  PlayerAgent: {fileID: 0}
 --- !u!50 &1119531316
 Rigidbody2D:
   serializedVersion: 4

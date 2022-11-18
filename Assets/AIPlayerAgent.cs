@@ -11,7 +11,7 @@ using UnityEngine.InputSystem;
 namespace Assets
 {
     [Serializable]
-    public class AIPlayerInput : BasePlayerAgent
+    public class AIPlayerAgent : BasePlayerAgent
     {
         public bool ShouldStare;
         public float PositionTolerance = 1.5f;

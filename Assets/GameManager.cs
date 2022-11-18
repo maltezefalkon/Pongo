@@ -28,26 +28,27 @@ namespace Assets
         }
 
         public BallController Ball = FindObject<BallController>("Ball");
-        public GameObject Particles = FindObject("Particles");
-        public AIPlayerInput StaringAI = FindObject<AIPlayerInput>("AIAgent2 (Stares)");
-        public AIPlayerInput NonStaringAI = FindObject<AIPlayerInput>("AIAgent1");
-        public HumanPlayerInput LeftPlayerInput = FindObject<HumanPlayerInput>("LeftHumanPlayer");
-        public HumanPlayerInput RightPlayerInput = FindObject<HumanPlayerInput>("RightHumanPlayer");
-        public GameObject SetupDialog = FindObject("SetupUIPanel");
-        public SetupUIManager SetupUIManager = FindObject<SetupUIManager>("SetupUIManager");
+        public AIPlayerAgent StaringAI = FindObject<AIPlayerAgent>("AIAgent2 (Stares)");
+        public AIPlayerAgent NonStaringAI = FindObject<AIPlayerAgent>("AIAgent1");
+        public HumanPlayerAgent LeftPlayerInput = FindObject<HumanPlayerAgent>("LeftHumanPlayer");
+        public HumanPlayerAgent RightPlayerInput = FindObject<HumanPlayerAgent>("RightHumanPlayer");
         public TextMeshProUGUI LeftPlayerScoreDisplay = FindObject<TextMeshProUGUI>("LeftPlayerScore");
         public TextMeshProUGUI RightPlayerScoreDisplay = FindObject<TextMeshProUGUI>("RightPlayerScore");
-        public PaddleController LeftPlayerPaddle = FindObject<PaddleController>("LeftPaddle");
-        public PaddleController RightPlayerPaddle = FindObject<PaddleController>("RightPaddle");
+        public PaddleController LeftPlayerPaddleController = FindObject<PaddleController>("LeftPaddle");
+        public PaddleController RightPlayerPaddleController = FindObject<PaddleController>("RightPaddle");
+
+        public GameObject Particles = FindObject("Particles");
+        public GameObject SetupDialog = FindObject("SetupUIPanel");
         public GameObject LeftPlayerGoal = FindObject("LeftGoal");
         public GameObject RightPlayerGoal = FindObject("RightGoal");
         public GameObject GameElements = FindObject("GameElements");
         public GameObject GameUI = FindObject("GameUI");
         public GameObject GameOverUI = FindObject("GameOverPanel");
-        public GameOverUIManager GameOverUIManager = FindObject<GameOverUIManager>("GameOverUIManager");
-
         public GameObject StartingLeftPaddlePosition = FindObject("LeftPaddleStartingPosition");
         public GameObject StartingRightPaddlePosition = FindObject("RightPaddleStartingPosition");
+
+        public SetupUIManager SetupUIManager = FindObject<SetupUIManager>("SetupUIManager");
+        public GameOverUIManager GameOverUIManager = FindObject<GameOverUIManager>("GameOverUIManager");
 
         private Player _leftPlayer;
         private Player _rightPlayer;
@@ -63,7 +64,7 @@ namespace Assets
 
         public static GameObject FindObject(string name)
         {
-            return Resources.FindObjectsOfTypeAll<GameObject>().First(go => go.name == name);
+            return Resources.FindObjectsOfTypeAll<GameObject>().First(gameObject => gameObject.name == name);
         }
 
         public Player GetPlayer(PlayerSide side)
@@ -80,7 +81,7 @@ namespace Assets
             {
                 if (null == _rightPlayer)
                 {
-                    _rightPlayer = new Player(RightPlayerScoreDisplay, RightPlayerPaddle, RightPlayerGoal, RightPlayerInput);
+                    _rightPlayer = new Player(RightPlayerScoreDisplay, RightPlayerPaddleController, RightPlayerGoal, RightPlayerInput);
                 }
                 return _rightPlayer;
             }
@@ -92,7 +93,7 @@ namespace Assets
             {
                 if (null == _leftPlayer)
                 {
-                    _leftPlayer = new Player(LeftPlayerScoreDisplay, LeftPlayerPaddle, LeftPlayerGoal, LeftPlayerInput);
+                    _leftPlayer = new Player(LeftPlayerScoreDisplay, LeftPlayerPaddleController, LeftPlayerGoal, LeftPlayerInput);
                 }
                 return _leftPlayer;
             }
@@ -107,7 +108,7 @@ namespace Assets
             // waits for click to launch
         }
 
-        internal void Score(GoalPosition position)
+        public void Score(GoalPosition position)
         {
             if (position == GoalPosition.Left)
             {
@@ -152,13 +153,15 @@ namespace Assets
             BeginRound();
         }
 
-        public void ShowSetupUI(bool show)
+        private void ShowSetupUI(bool show)
         {
+            EnableGameControls(!show);
             SetupDialog.SetActive(show);
         }
 
-        public void ShowGame(bool show)
+        private void ShowGame(bool show)
         {
+            EnableGameControls(show);
             GameElements.SetActive(show);
             GameUI.SetActive(show);
         }
@@ -184,10 +187,17 @@ namespace Assets
             RightPlayer.Score = 0;
         }
 
-        public void ShowGameOver(bool show, PlayerSide winningSide)
+        private void ShowGameOver(bool show, PlayerSide winningSide)
         {
+            EnableGameControls(!show);
             GameOverUIManager.WinningSide = winningSide;
             GameOverUI.SetActive(show);
+        }
+
+        private void EnableGameControls(bool enabled)
+        {
+            LeftPlayerPaddleController.enabled = enabled;
+            RightPlayerPaddleController.enabled = enabled;
         }
     }
 }
