@@ -81,8 +81,8 @@ namespace Assets
             LeftPaddle.SetActive(enable);
             RightPaddle.SetActive(enable);
             Ball.SetActive(enable);
-            LeftPlayerScoreDisplay.gameObject.SetActive(enable);
-            RightPlayerScoreDisplay.gameObject.SetActive(enable);
+            LeftPlayerScoreDisplay.gameObject?.SetActive(enable);
+            RightPlayerScoreDisplay.gameObject?.SetActive(enable);
         }
 
         public void ScorePoint(PlayerSide side)

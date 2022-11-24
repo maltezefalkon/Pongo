@@ -20,6 +20,7 @@ public class BallController : BaseController
     public ScriptablePlayerSideEvent PointScoredEvent;
     public GameParameters GameParameters;
 
+    public float VelocityMultiplier = 0.08f;
     public float MinLaunchDegrees = 10f;
     public float MaxLaunchDegrees = 50f;
 
@@ -28,6 +29,7 @@ public class BallController : BaseController
     private InputAction startAction;
     private InputAction resetAction;
     private bool clicked = false;
+
 
     private void Awake()
     {
@@ -70,6 +72,14 @@ public class BallController : BaseController
         SetRandomVelocity();
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Paddle")
+        {
+            rb.velocity *= 1 + VelocityMultiplier;
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         CallComponent<GoalController>(CollideWithGoal, collision.gameObject);
@@ -105,7 +115,7 @@ public class BallController : BaseController
 
     public Vector2 GetRandomVelocity()
     {
-        // generates an angle between 15 and 40 degrees in any of the 4 quadrants
+        // generates an angle between MinLaunchDegrees and MaxLaunchDegrees degrees in any of the 4 quadrants
         float randomAngle = Random.Range(MinLaunchDegrees, MaxLaunchDegrees) * Mathf.Deg2Rad;
         int xSign = Random.Range(0, 2) == 0 ? -1 : 1;
         int ySign = Random.Range(0, 2) == 0 ? -1 : 1;
