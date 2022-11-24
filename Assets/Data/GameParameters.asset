@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GameParameters
   m_EditorClassIdentifier: 
   WinningScore: 3
-  SlowBallSpeed: 3
-  MediumBallSpeed: 6
-  FastBallSpeed: 9
-  VeryFastBallSpeed: 12
+  SlowBallSpeed: 5
+  MediumBallSpeed: 7.5
+  FastBallSpeed: 10
+  VeryFastBallSpeed: 15
