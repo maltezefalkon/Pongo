@@ -13,10 +13,6 @@ using Random = UnityEngine.Random;
 public class BallController : BaseController
 {
     public ScriptableBallSpeedRank Speed;
-    public ScriptableInt LeftPlayerScore;
-    public ScriptableInt RightPlayerScore;
-
-    public ScriptablePlayerSideEvent GameOverEvent;
     public ScriptablePlayerSideEvent PointScoredEvent;
     public GameParameters GameParameters;
 
@@ -90,27 +86,13 @@ public class BallController : BaseController
         Debug.Log($"Hit {goalController.Position} goal");
         if (goalController.Position == GoalPosition.Left)
         {
-            RightPlayerScore.RuntimeValue += 1;
             PointScoredEvent.Raise(PlayerSide.Right);
         }
         else if (goalController.Position == GoalPosition.Right)
         {
-            LeftPlayerScore.RuntimeValue += 1;
             PointScoredEvent.Raise(PlayerSide.Left);
         }
-
-        if (RightPlayerScore.RuntimeValue >= GameParameters.WinningScore)
-        {
-            GameOverEvent.Raise(PlayerSide.Right);
-        }
-        else if (LeftPlayerScore.RuntimeValue >= GameParameters.WinningScore)
-        {
-            GameOverEvent.Raise(PlayerSide.Left);
-        }
-        else
-        {
-            ResetBall();
-        }
+        ResetBall();
     }
 
     public Vector2 GetRandomVelocity()

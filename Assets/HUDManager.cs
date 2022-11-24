@@ -84,9 +84,5 @@ namespace Assets
             LeftPlayerScoreDisplay.gameObject?.SetActive(enable);
             RightPlayerScoreDisplay.gameObject?.SetActive(enable);
         }
-
-        public void ScorePoint(PlayerSide side)
-        {
-        }
     }
 }

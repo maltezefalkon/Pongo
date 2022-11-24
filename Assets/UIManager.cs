@@ -51,11 +51,6 @@ namespace Assets
             GetUIManager(ui).gameObject.SetActive(true);
         }
 
-        public void HandlePointScored(PlayerSide side)
-        {
-            HUDManager.ScorePoint(side);
-        }
-
         public void HandleGameOver(PlayerSide side)
         {
             GameOverUIManager.WinningSide = side;
