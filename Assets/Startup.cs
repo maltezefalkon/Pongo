@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scriptables;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,9 +10,10 @@ namespace Assets
 {
     public class Startup : MonoBehaviour
     {
+        public ScriptableUI UI;
+
         private void Start()
         {
-            GameManager.Instance.Initialize();
         }
     }
 }

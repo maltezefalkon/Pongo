@@ -9,18 +9,17 @@ using UnityEngine;
 
 namespace Assets
 {
-    public class Player
+    public class Player : ScriptableObject
     {
         private TextMeshProUGUI _scoreDisplay;
         private PaddleController _paddle;
         private GameObject _goal;
 
-        public Player(TextMeshProUGUI scoreDisplay, PaddleController paddle, GameObject goal, BasePlayerAgent agent)
+        public Player(TextMeshProUGUI scoreDisplay, PaddleController paddle, GameObject goal)
         {
             _scoreDisplay = scoreDisplay;
             _paddle = paddle;
             _goal = goal;
-            _agent = agent;
         }
 
         private int _score = 0;
@@ -40,19 +39,5 @@ namespace Assets
         public PaddleController Paddle => _paddle;
 
         public TextMeshProUGUI ScoreDisplay => _scoreDisplay;
-
-        private BasePlayerAgent _agent;
-        public BasePlayerAgent Agent
-        {
-            get
-            {
-                return _agent;
-            }
-            set
-            {
-                _agent = value;
-                Paddle.PlayerAgent = _agent;
-            }
-        }
     }
 }

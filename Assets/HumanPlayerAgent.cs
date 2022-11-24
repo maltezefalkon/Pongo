@@ -9,7 +9,6 @@ using UnityEngine.InputSystem;
 
 namespace Assets
 {
-    [Serializable]
     public class HumanPlayerAgent : BasePlayerAgent
     {
         [SerializeField]

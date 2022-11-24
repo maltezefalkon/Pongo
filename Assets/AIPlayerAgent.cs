@@ -10,25 +10,24 @@ using UnityEngine.InputSystem;
 
 namespace Assets
 {
-    [Serializable]
     public class AIPlayerAgent : BasePlayerAgent
     {
         public bool ShouldStare;
         public float PositionTolerance = 1.5f;
+        public BallController Ball;
 
         public override Vector2 GetHeading(GameObject paddle)
         {
-            GameObject ball = GameManager.Instance.Ball.gameObject;
-            if (!ShouldStare || BallIsMovingTowardsPaddle(ball, paddle))
+            if (!ShouldStare || BallIsMovingTowardsPaddle(paddle))
             {
-                float yDistance = paddle.transform.position.y - ball.transform.position.y;
+                float yDistance = paddle.transform.position.y - Ball.transform.position.y;
                 if (Math.Abs(yDistance) > PositionTolerance)
                 {
-                    if (ball.transform.position.y > paddle.transform.position.y)
+                    if (Ball.transform.position.y > paddle.transform.position.y)
                     {
                         return new Vector2(0, 1);
                     }
-                    else if (ball.transform.position.y < paddle.transform.position.y)
+                    else if (Ball.transform.position.y < paddle.transform.position.y)
                     {
                         return new Vector2(0, -1);
                     }
@@ -37,10 +36,10 @@ namespace Assets
             return Vector2.zero;
         }
 
-        bool BallIsMovingTowardsPaddle(GameObject ball, GameObject paddle)
+        bool BallIsMovingTowardsPaddle(GameObject paddle)
         {
-            float ballXVelocity = ball.GetComponent<Rigidbody2D>().velocity.x;
-            PlayerSide side = paddle.GetComponent<PaddleController>().side;
+            float ballXVelocity = Ball.GetComponent<Rigidbody2D>().velocity.x;
+            PlayerSide side = paddle.GetComponent<PaddleController>().Side;
             switch (side)
             {
                 case PlayerSide.Left:

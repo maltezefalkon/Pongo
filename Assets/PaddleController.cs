@@ -1,5 +1,6 @@
 using Assets;
 using Assets.Enums;
+using Assets.Scriptables;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,11 +13,14 @@ using UnityEngine.InputSystem;
 public class PaddleController : BaseController
 {
     // settable in editor
-    public float movementSpeed = 5f;
-    public PlayerSide side = PlayerSide.None;
+    public float MovementSpeed = 5f;
+    public PlayerSide Side = PlayerSide.None;
+    public ScriptableAgentType AgentType;
 
-    [SerializeField, SerializeReference]
-    public BasePlayerAgent PlayerAgent;
+    public HumanPlayerAgent LeftHumanAgent;
+    public HumanPlayerAgent RightHumanAgent;
+    public AIPlayerAgent DefaultAIAgent;
+    public AIPlayerAgent StaringAIAgent;
 
     // private fields
     private Rigidbody2D rb;
@@ -25,9 +29,25 @@ public class PaddleController : BaseController
 
     void Awake()
     {
-        if (side == PlayerSide.None) throw new Exception("No player side defined for PaddleController");
-        PlayerAgent = PlayerAgent ?? GetComponent<BasePlayerAgent>() ?? GameManager.Instance.GetPlayer(side).Agent ?? throw new Exception($"Failed to determine agent for {side} {nameof(PaddleController)}");
+        if (Side == PlayerSide.None) throw new Exception("No player side defined for PaddleController");
         rb = GetComponent<Rigidbody2D>();
+    }
+
+    public BasePlayerAgent PlayerAgent
+    {
+        get
+        {
+            switch (AgentType.RuntimeValue)
+            {
+                case Assets.Enums.AgentType.AI_Staring: return StaringAIAgent;
+                case Assets.Enums.AgentType.AI_Default: return DefaultAIAgent;
+                case Assets.Enums.AgentType.Human:
+                    if (Side == PlayerSide.Left) return LeftHumanAgent;
+                    if (Side == PlayerSide.Right) return RightHumanAgent;
+                    break;
+            }
+            throw new ArgumentOutOfRangeException(nameof(Assets.Enums.AgentType));
+        }
     }
 
     private void OnEnable()
@@ -45,7 +65,7 @@ public class PaddleController : BaseController
     private void Update()
     {
         heading = stopped ? Vector2.zero : PlayerAgent.GetHeading(gameObject); // returns a vector of magnitude 1
-        rb.velocity = new Vector2(0, heading.y * movementSpeed);
+        rb.velocity = new Vector2(0, heading.y * MovementSpeed);
         stopped = false;
     }
 

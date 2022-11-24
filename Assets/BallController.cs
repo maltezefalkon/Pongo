@@ -1,18 +1,27 @@
 using Assets;
 using Assets.Enums;
+using Assets.Scriptables;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.AnimatedValues;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
 
 public class BallController : BaseController
 {
-    public float Speed = 2f;
-    public float MinLaunchDegrees = 15f;
-    public float MaxLaunchDegrees = 40f;
+    public ScriptableBallSpeedRank Speed;
+    public ScriptableInt LeftPlayerScore;
+    public ScriptableInt RightPlayerScore;
+
+    public ScriptablePlayerSideEvent GameOverEvent;
+    public ScriptablePlayerSideEvent PointScoredEvent;
+    public GameParameters GameParameters;
+
+    public float MinLaunchDegrees = 10f;
+    public float MaxLaunchDegrees = 50f;
 
     private Rigidbody2D rb;
     private PaddleMovement paddleMovement;
@@ -33,6 +42,7 @@ public class BallController : BaseController
     {
         startAction.Enable();
         resetAction.Enable();
+        ResetBall();
     }
 
     private void OnDisable()
@@ -45,13 +55,19 @@ public class BallController : BaseController
     {
         if (resetAction.triggered)
         {
-            GameManager.Instance.BeginRound();
+            ResetBall();
         }
         if (startAction.triggered && !clicked)
         {
             clicked = true;
             rb.simulated = true;
         }
+    }
+
+    private void ResetBall()
+    {
+        ResetPosition();
+        SetRandomVelocity();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -62,7 +78,29 @@ public class BallController : BaseController
     private void CollideWithGoal(GoalController goalController)
     {
         Debug.Log($"Hit {goalController.Position} goal");
-        GameManager.Instance.Score(goalController.Position);
+        if (goalController.Position == GoalPosition.Left)
+        {
+            RightPlayerScore.RuntimeValue += 1;
+            PointScoredEvent.Raise(PlayerSide.Right);
+        }
+        else if (goalController.Position == GoalPosition.Right)
+        {
+            LeftPlayerScore.RuntimeValue += 1;
+            PointScoredEvent.Raise(PlayerSide.Left);
+        }
+
+        if (RightPlayerScore.RuntimeValue >= GameParameters.WinningScore)
+        {
+            GameOverEvent.Raise(PlayerSide.Right);
+        }
+        else if (LeftPlayerScore.RuntimeValue >= GameParameters.WinningScore)
+        {
+            GameOverEvent.Raise(PlayerSide.Left);
+        }
+        else
+        {
+            ResetBall();
+        }
     }
 
     public Vector2 GetRandomVelocity()
@@ -73,7 +111,19 @@ public class BallController : BaseController
         int ySign = Random.Range(0, 2) == 0 ? -1 : 1;
         float x = Mathf.Cos(randomAngle) * xSign;
         float y = Mathf.Sin(randomAngle) * ySign;
-        return new Vector2(x, y).normalized * Speed;
+        return new Vector2(x, y).normalized * ConvertBallSpeed(Speed.RuntimeValue);
+    }
+
+    public float ConvertBallSpeed(BallSpeedRank speed)
+    {
+        switch (speed)
+        {
+            case BallSpeedRank.VeryFast: return GameParameters.VeryFastBallSpeed;
+            case BallSpeedRank.Fast: return GameParameters.FastBallSpeed;
+            case BallSpeedRank.Medium: return GameParameters.MediumBallSpeed;
+            case BallSpeedRank.Slow: return GameParameters.SlowBallSpeed;
+            default: throw new ArgumentOutOfRangeException(nameof(speed));
+        }
     }
 
     public void SetRandomVelocity()

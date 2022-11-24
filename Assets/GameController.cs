@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json.Bson;
+﻿using Assets.Enums;
+using Assets.Scriptables;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,8 +10,7 @@ using UnityEngine;
 
 namespace Assets
 {
-    public abstract class BasePlayerAgent : MonoBehaviour
+    public class GameController : MonoBehaviour
     {
-        public abstract Vector2 GetHeading(GameObject paddle);
     }
 }
